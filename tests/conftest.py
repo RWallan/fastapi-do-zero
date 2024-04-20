@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from fastapi_do_zero.app import app
-from fastapi_do_zero.models._base import reg
+from fastapi_do_zero.models import reg
 
 
 @pytest.fixture

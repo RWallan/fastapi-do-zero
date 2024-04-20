@@ -1,6 +1,6 @@
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, registry
 
-from ._base import reg
+reg = registry()
 
 
 @reg.mapped_as_dataclass
