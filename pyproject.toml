@@ -12,6 +12,7 @@ uvicorn = {extras = ["standard"], version = "^0.29.0"}
 pydantic = {extras = ["email"], version = "^2.6.4"}
 sqlalchemy = "^2.0.29"
 pydantic-settings = "^2.2.1"
+alembic = "^1.13.1"
 
 
 [tool.poetry.group.dev.dependencies]
