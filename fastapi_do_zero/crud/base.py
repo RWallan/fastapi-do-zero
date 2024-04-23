@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from fastapi_do_zero.models import reg
+from fastapi_do_zero.database.models import reg
 
 ModelT = TypeVar("ModelT", bound=type(reg.mapped_as_dataclass))
 CreateSchemaT = TypeVar("CreateSchemaT", bound=BaseModel)

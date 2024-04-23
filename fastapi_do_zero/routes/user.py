@@ -3,9 +3,10 @@ from http import HTTPStatus
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from fastapi_do_zero import crud, models, schemas
-from fastapi_do_zero.database import get_session
-from fastapi_do_zero.security import get_current_user
+from fastapi_do_zero import crud, schemas
+from fastapi_do_zero.database import models
+from fastapi_do_zero.database.init_session import get_session
+from fastapi_do_zero.helpers.security import get_current_user
 
 router = APIRouter()
 

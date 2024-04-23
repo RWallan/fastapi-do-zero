@@ -5,8 +5,8 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from fastapi_do_zero import crud, schemas
-from fastapi_do_zero.database import get_session
-from fastapi_do_zero.security import JWT
+from fastapi_do_zero.database.init_session import get_session
+from fastapi_do_zero.helpers.security import JWT
 
 router = APIRouter()
 

@@ -4,9 +4,9 @@ from pydantic import EmailStr
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from fastapi_do_zero.models import User
+from fastapi_do_zero.database.models import User
+from fastapi_do_zero.helpers.security import Hasher
 from fastapi_do_zero.schemas.user import UserCreate, UserUpdate
-from fastapi_do_zero.security import Hasher
 
 from .base import BaseCRUD
 

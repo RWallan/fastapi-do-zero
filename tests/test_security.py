@@ -1,6 +1,6 @@
 import jwt
 
-from fastapi_do_zero.security import JWT
+from fastapi_do_zero.helpers.security import JWT
 
 
 def test_jwt():

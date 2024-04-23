@@ -11,8 +11,8 @@ from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from fastapi_do_zero import crud
-from fastapi_do_zero.database import get_session
-from fastapi_do_zero.models import User
+from fastapi_do_zero.database.init_session import get_session
+from fastapi_do_zero.database.models import User
 from fastapi_do_zero.schemas.token import TokenPayload
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")

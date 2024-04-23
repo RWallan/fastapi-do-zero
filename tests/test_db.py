@@ -1,7 +1,7 @@
 import pytest
 from sqlalchemy import select
 
-from fastapi_do_zero.models import User
+from fastapi_do_zero.database.models import User
 
 
 @pytest.mark.asyncio

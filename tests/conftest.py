@@ -4,9 +4,9 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
 from fastapi_do_zero.app import app
-from fastapi_do_zero.database import get_session
-from fastapi_do_zero.models import User, reg
-from fastapi_do_zero.security import Hasher
+from fastapi_do_zero.database.init_session import get_session
+from fastapi_do_zero.database.models import User, reg
+from fastapi_do_zero.helpers.security import Hasher
 
 
 @pytest_asyncio.fixture
