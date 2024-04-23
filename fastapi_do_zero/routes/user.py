@@ -36,6 +36,20 @@ async def read_users(
     return {"users": users}
 
 
+@router.get("/users/{id}", response_model=schemas.User)
+async def read_user_by_id(
+    id: int, session: AsyncSession = Depends(get_session)
+):
+    user = await crud.user.get_by_id(session, id=id)
+
+    if not user:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND, detail="User não encontrado."
+        )
+
+    return user
+
+
 @router.put(
     "/users/{user_id}",
     status_code=HTTPStatus.CREATED,

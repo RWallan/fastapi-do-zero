@@ -47,6 +47,15 @@ async def test_read_users(client):
 
 
 @pytest.mark.asyncio
+async def test_read_user_by_id(client, user):
+    user_schema = User.model_validate(user).model_dump()
+    response = await client.get("/users/1")
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == user_schema
+
+
+@pytest.mark.asyncio
 async def test_read_users_with_users(client, user):
     user_schema = User.model_validate(user).model_dump()
     response = await client.get("/users/")
