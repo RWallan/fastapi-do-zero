@@ -59,7 +59,7 @@ async def user(session):
 @pytest_asyncio.fixture
 async def token(client, user):
     response = await client.post(
-        "/token",
+        "/auth/token",
         data={"username": user.email, "password": user.clean_password},
     )
 

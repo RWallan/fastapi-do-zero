@@ -8,7 +8,7 @@ from fastapi_do_zero import crud, schemas
 from fastapi_do_zero.database.init_session import get_session
 from fastapi_do_zero.helpers.security import JWT
 
-router = APIRouter()
+router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post("/token", response_model=schemas.Token)

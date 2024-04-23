@@ -6,7 +6,7 @@ import pytest
 @pytest.mark.asyncio
 async def test_get_token(client, user):
     response = await client.post(
-        "/token",
+        "/auth/token",
         data={"username": user.email, "password": user.clean_password},
     )
 

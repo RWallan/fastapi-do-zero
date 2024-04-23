@@ -8,12 +8,10 @@ from fastapi_do_zero.database import models
 from fastapi_do_zero.database.init_session import get_session
 from fastapi_do_zero.helpers.security import get_current_user
 
-router = APIRouter()
+router = APIRouter(prefix="/users", tags=["users"])
 
 
-@router.post(
-    "/users/", status_code=HTTPStatus.CREATED, response_model=schemas.User
-)
+@router.post("/", status_code=HTTPStatus.CREATED, response_model=schemas.User)
 async def create_user(
     user: schemas.UserCreate, session: AsyncSession = Depends(get_session)
 ) -> models.User:
@@ -28,7 +26,7 @@ async def create_user(
     return created_user
 
 
-@router.get("/users/", response_model=schemas.UserList)
+@router.get("/", response_model=schemas.UserList)
 async def read_users(
     skip: int = 0,
     limit: int = 100,
@@ -38,7 +36,7 @@ async def read_users(
     return {"users": users}
 
 
-@router.get("/users/{id}", response_model=schemas.User)
+@router.get("/{id}", response_model=schemas.User)
 async def read_user_by_id(
     id: int, session: AsyncSession = Depends(get_session)
 ):
@@ -53,7 +51,7 @@ async def read_user_by_id(
 
 
 @router.put(
-    "/users/{user_id}",
+    "/{user_id}",
     status_code=HTTPStatus.CREATED,
     response_model=schemas.User,
 )
@@ -77,7 +75,7 @@ async def update_user(
     return updated_user
 
 
-@router.delete("/users/{user_id}", response_model=schemas.Msg)
+@router.delete("/{user_id}", response_model=schemas.Msg)
 async def delete_user(
     user_id: int,
     session: AsyncSession = Depends(get_session),
