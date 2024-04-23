@@ -6,6 +6,7 @@ from sqlalchemy.pool import StaticPool
 from fastapi_do_zero.app import app
 from fastapi_do_zero.database import get_session
 from fastapi_do_zero.models import User, reg
+from fastapi_do_zero.security import Hasher
 
 
 @pytest_asyncio.fixture
@@ -41,9 +42,25 @@ async def session():
 
 @pytest_asyncio.fixture
 async def user(session):
-    user = User(username="teste", email="teste@teste.com", password="teste")
+    user = User(
+        username="teste",
+        email="teste@teste.com",
+        password=Hasher.get_password_hash("teste"),
+    )
     session.add(user)
     await session.commit()
     await session.refresh(user)
 
+    user.clean_password = "teste"
+
     return user
+
+
+@pytest_asyncio.fixture
+async def token(client, user):
+    response = await client.post(
+        "/token",
+        data={"username": user.email, "password": user.clean_password},
+    )
+
+    return response.json()["access_token"]

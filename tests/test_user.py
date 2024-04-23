@@ -65,9 +65,10 @@ async def test_read_users_with_users(client, user):
 
 
 @pytest.mark.asyncio
-async def test_update_user(client, user):
+async def test_update_user(client, user, token):
     response = await client.put(
-        "/users/1",
+        f"/users/{user.id}",
+        headers={"Authorization": f"Bearer {token}"},
         json={
             "username": "string",
             "password": "stringst",
@@ -79,14 +80,15 @@ async def test_update_user(client, user):
     assert response.json() == {
         "username": "string",
         "email": "example@example.com.br",
-        "id": 1,
+        "id": user.id,
     }
 
 
 @pytest.mark.asyncio
-async def test_update_user_with_wrong_id(client):
+async def test_update_user_with_wrong_id(client, user, token):
     response = await client.put(
         "/users/2",
+        headers={"Authorization": f"Bearer {token}"},
         json={
             "username": "string",
             "password": "stringst",
@@ -94,21 +96,25 @@ async def test_update_user_with_wrong_id(client):
         },
     )
 
-    assert response.status_code == HTTPStatus.NOT_FOUND
-    assert response.json() == {"detail": "User não encontrado."}
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+    assert response.json() == {"detail": "Sem permissão"}
 
 
 @pytest.mark.asyncio
-async def test_delete_user(client, user):
-    response = await client.delete("/users/1")
+async def test_delete_user(client, user, token):
+    response = await client.delete(
+        f"/users/{user.id}", headers={"Authorization": f"Bearer {token}"}
+    )
 
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {"message": "User deletado."}
 
 
 @pytest.mark.asyncio
-async def test_delete_user_with_wrong_id(client):
-    response = await client.delete("/users/1")
+async def test_delete_user_with_wrong_id(client, user, token):
+    response = await client.delete(
+        "/users/2", headers={"Authorization": f"Bearer {token}"}
+    )
 
-    assert response.status_code == HTTPStatus.NOT_FOUND
-    assert response.json() == {"detail": "User não encontrado."}
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+    assert response.json() == {"detail": "Sem permissão"}

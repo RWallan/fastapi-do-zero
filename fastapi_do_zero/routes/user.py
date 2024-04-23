@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from fastapi_do_zero import crud, models, schemas
 from fastapi_do_zero.database import get_session
+from fastapi_do_zero.security import get_current_user
 
 router = APIRouter()
 
@@ -59,13 +60,14 @@ async def update_user(
     user_id: int,
     user: schemas.UserUpdate,
     session: AsyncSession = Depends(get_session),
+    current_user: models.User = Depends(get_current_user),
 ):
-    user_in_db = await crud.user.get_by_id(session, id=user_id)
-
-    if not user_in_db:
+    if current_user.id != user_id:
         raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND, detail="User não encontrado."
+            status_code=HTTPStatus.BAD_REQUEST, detail="Sem permissão"
         )
+
+    user_in_db = await crud.user.get_by_id(session, id=user_id)
 
     updated_user = await crud.user.update(
         session, db_obj=user_in_db, obj_in=user
@@ -76,14 +78,16 @@ async def update_user(
 
 @router.delete("/users/{user_id}", response_model=schemas.Msg)
 async def delete_user(
-    user_id: int, session: AsyncSession = Depends(get_session)
+    user_id: int,
+    session: AsyncSession = Depends(get_session),
+    current_user: models.User = Depends(get_current_user),
 ):
-    user_in_db = await crud.user.get_by_id(session, id=user_id)
-
-    if not user_in_db:
+    if current_user.id != user_id:
         raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND, detail="User não encontrado."
+            status_code=HTTPStatus.BAD_REQUEST, detail="Sem permissão"
         )
+
+    user_in_db = await crud.user.get_by_id(session, id=user_id)
 
     await crud.user.delete(session, db_obj=user_in_db)
 

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from fastapi_do_zero.routes import user_router
+from fastapi_do_zero.routes import auth_router, user_router
 
 app = FastAPI()
 
@@ -11,3 +11,4 @@ def health_check():
 
 
 app.include_router(user_router)
+app.include_router(auth_router)
