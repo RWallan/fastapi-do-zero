@@ -26,6 +26,7 @@ httpx = "^0.27.0"
 pre-commit = "^3.7.0"
 pytest-asyncio = "^0.23.6"
 aiosqlite = "^0.20.0"
+gevent = "^24.2.1"
 
 [build-system]
 requires = ["poetry-core"]
@@ -43,6 +44,9 @@ extend_skip = ["migrations"]
 [tool.black]
 line-length = 79
 extend-exclude = "(migrations/)"
+
+[tool.coverage.run]
+concurrency = ["gevent"]
 
 [tool.taskipy.tasks]
 lint = "ruff check && black --check . --diff && isort --check . --diff"

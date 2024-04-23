@@ -1,26 +1,39 @@
 from http import HTTPStatus
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from fastapi_do_zero import schemas
+from fastapi_do_zero import crud, models, schemas
+from fastapi_do_zero.database import get_session
 
 router = APIRouter()
-
-database: list[schemas.UserDb] = []
 
 
 @router.post(
     "/users/", status_code=HTTPStatus.CREATED, response_model=schemas.User
 )
-def create_user(user: schemas.UserCreate):
-    created_user = schemas.UserDb(**user.model_dump(), id=len(database) + 1)
-    database.append(created_user)
+async def create_user(
+    user: schemas.UserCreate, session: AsyncSession = Depends(get_session)
+) -> models.User:
+    db_user = await crud.user.get_by_username(session, username=user.username)
+
+    if db_user:
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST, detail="Username já registrado"
+        )
+
+    created_user = await crud.user.create(session, obj_in=user)
     return created_user
 
 
 @router.get("/users/", response_model=schemas.UserList)
-def read_users():
-    return {"users": database}
+async def read_users(
+    skip: int = 0,
+    limit: int = 100,
+    session: AsyncSession = Depends(get_session),
+):
+    users = await crud.user.read_multi(session, skip=skip, limit=limit)
+    return {"users": users}
 
 
 @router.put(
@@ -28,32 +41,36 @@ def read_users():
     status_code=HTTPStatus.CREATED,
     response_model=schemas.User,
 )
-def update_user(user_id: int, user: schemas.UserUpdate):
-    if user_id > len(database) or user_id < 1:
+async def update_user(
+    user_id: int,
+    user: schemas.UserUpdate,
+    session: AsyncSession = Depends(get_session),
+):
+    user_in_db = await crud.user.get_by_id(session, id=user_id)
+
+    if not user_in_db:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND, detail="User não encontrado."
         )
 
-    retrieved_user = database[user_id - 1].model_dump()
-    obj_data = user.model_dump(exclude_unset=True)
-    updated_user = retrieved_user.copy()
-
-    updated_user.update(obj_data)
-
-    updated_user = schemas.UserDb(**updated_user)
-
-    database[user_id - 1] = updated_user
+    updated_user = await crud.user.update(
+        session, db_obj=user_in_db, obj_in=user
+    )
 
     return updated_user
 
 
 @router.delete("/users/{user_id}", response_model=schemas.Msg)
-def delete_user(user_id: int):
-    if user_id > len(database) or user_id < 1:
+async def delete_user(
+    user_id: int, session: AsyncSession = Depends(get_session)
+):
+    user_in_db = await crud.user.get_by_id(session, id=user_id)
+
+    if not user_in_db:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND, detail="User não encontrado."
         )
 
-    del database[user_id - 1]
+    await crud.user.delete(session, db_obj=user_in_db)
 
     return schemas.Msg(message="User deletado.")
