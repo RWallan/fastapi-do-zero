@@ -40,3 +40,25 @@ async def test_token_expired_after_time(client, user):
     assert response.json() == {
         "detail": "Não foi possível validar as credenciais"
     }
+
+
+@pytest.mark.asyncio
+async def test_token_inexistent_user(client):
+    response = await client.post(
+        "/auth/token",
+        data={"username": "no_user@no_domain.com", "password": "teste"},
+    )
+
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+    assert response.json() == {"detail": "Email ou senha incorreto"}
+
+
+@pytest.mark.asyncio
+async def test_token_wrong_pwd(client, user):
+    response = await client.post(
+        "/auth/token",
+        data={"username": user.email, "password": "wrong"},
+    )
+
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+    assert response.json() == {"detail": "Email ou senha incorreto"}
