@@ -85,7 +85,7 @@ async def test_update_user(client, user, token):
 
 
 @pytest.mark.asyncio
-async def test_update_user_with_wrong_id(client, user, token):
+async def test_update_user_with_wrong_id(client, token):
     response = await client.put(
         "/users/2",
         headers={"Authorization": f"Bearer {token}"},
@@ -111,7 +111,7 @@ async def test_delete_user(client, user, token):
 
 
 @pytest.mark.asyncio
-async def test_delete_user_with_wrong_id(client, user, token):
+async def test_delete_user_with_wrong_id(client, token):
     response = await client.delete(
         "/users/2", headers={"Authorization": f"Bearer {token}"}
     )
