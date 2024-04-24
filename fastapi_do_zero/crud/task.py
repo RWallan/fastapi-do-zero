@@ -5,7 +5,7 @@ from fastapi_do_zero.database.models import Task
 from fastapi_do_zero.schemas import TaskCreate, TaskUpdate
 
 
-class TaskCRUD(BaseCRUD[TaskCreate, TaskUpdate]):
+class TaskCRUD(BaseCRUD[Task, TaskCreate, TaskUpdate]):
     async def create(  # pyright: ignore
         self, session: AsyncSession, *, user_id: int, obj_in: TaskCreate
     ):

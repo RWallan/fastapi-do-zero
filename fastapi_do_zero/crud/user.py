@@ -11,7 +11,7 @@ from fastapi_do_zero.schemas.user import UserCreate, UserUpdate
 from .base import BaseCRUD
 
 
-class UserCRUD(BaseCRUD[UserCreate, UserUpdate]):
+class UserCRUD(BaseCRUD[User, UserCreate, UserUpdate]):
     async def get_by_username(
         self, session: AsyncSession, *, username: str
     ) -> Optional[User]:
