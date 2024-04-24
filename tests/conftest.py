@@ -1,6 +1,6 @@
 import pytest_asyncio
 from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.pool import StaticPool
 
 from fastapi_do_zero.app import app
@@ -30,11 +30,11 @@ async def session():
         connect_args={"check_same_thread": False},
         poolclass=StaticPool,
     )
-    Session = async_sessionmaker(bind=engine)
     async with engine.begin() as conn:
         await conn.run_sync(reg.metadata.create_all)
 
-    yield Session()
+    async with AsyncSession(engine) as session:
+        yield session
 
     async with engine.begin() as conn:
         await conn.run_sync(reg.metadata.drop_all)
@@ -51,7 +51,7 @@ async def user(session):
     await session.commit()
     await session.refresh(user)
 
-    user.clean_password = "teste"
+    user.clean_password = "teste"  # pyright: ignore
 
     return user
 
