@@ -27,3 +27,10 @@ async def access_token(
     access_token = JWT.encode(data={"sub": user.id})
 
     return schemas.Token(access_token=access_token, token_type="bearer")
+
+
+@router.post("/refresh_token", response_model=schemas.Token)
+async def refresh_access_token(user: deps.CurrentUser):
+    new_token = JWT.encode(data={"sub": user.id})
+
+    return schemas.Token(access_token=new_token, token_type="bearer")
