@@ -71,7 +71,7 @@ async def get_current_user(
         payload = JWT.decode(token)
 
         token_data = TokenPayload(**payload)
-    except (jwt.DecodeError, ValidationError):
+    except (jwt.DecodeError, jwt.ExpiredSignatureError, ValidationError):
         raise credentials_exception
 
     user = await crud.user.get_by_id(session, id=token_data.sub)
