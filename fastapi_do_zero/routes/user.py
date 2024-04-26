@@ -64,6 +64,11 @@ async def update_user(
 
     user_in_db = await crud.user.get_by_id(session, id=user_id)
 
+    if not user_in_db:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND, detail="Usuário não encontrado"
+        )
+
     updated_user = await crud.user.update(
         session, db_obj=user_in_db, obj_in=user
     )
